@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kiosko Retro-Androide // VentaniYA 1001 // LICENCIAS ESPACIALES</title>
+    <style>
+        :root {
+            --bg-dark: #0b0f19;
+            --panel-bg: #121826;
+            --neon-green: #00ffcc;
+            --neon-amber: #ffb703;
+            --text-main: #e0fbfc;
+        }
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: 'Courier New', Courier, monospace;
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            color: var(--neon-green);
+            text-shadow: 0 0 10px rgba(0, 255, 204, 0.4);
+            margin-bottom: 5px;
+        }
+        .marca-sub {
+            color: var(--neon-amber);
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+        }
+        .kiosko-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: var(--panel-bg);
+            border: 2px solid var(--neon-green);
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 0 20px rgba(0, 255, 204, 0.2);
+        }
+        .upload-box {
+            border: 2px dashed var(--neon-amber);
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            background: rgba(255, 183, 3, 0.05);
+        }
+        .botones-maquina {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        button {
+            background: transparent;
+            border: 2px solid;
+            padding: 12px 20px;
+            font-family: inherit;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+        .btn-espacial {
+            border-color: var(--neon-green);
+            color: var(--neon-green);
+        }
+        .btn-espacial:hover {
+            background: var(--neon-green);
+            color: var(--bg-dark);
+            box-shadow: 0 0 15px var(--neon-green);
+        }
+        .btn-licencia {
+            border-color: #ff3366;
+            color: #ff3366;
+        }
+        .btn-licencia:hover {
+            background: #ff3366;
+            color: var(--bg-dark);
+            box-shadow: 0 0 15px #ff3366;
+        }
+        .btn-bondi {
+            border-color: var(--neon-amber);
+            color: var(--neon-amber);
+        }
+        .btn-bondi:hover {
+            background: var(--neon-amber);
+            color: var(--bg-dark);
+            box-shadow: 0 0 15px var(--neon-amber);
+        }
+        .btn-descarga {
+            border-color: #33ccff;
+            color: #33ccff;
+            display: none;
+            margin: 20px auto 0 auto;
+        }
+        .btn-descarga:hover {
+            background: #33ccff;
+            color: var(--bg-dark);
+            box-shadow: 0 0 15px #33ccff;
+        }
+        canvas {
+            max-width: 100%;
+            margin-top: 15px;
+            border: 2px solid #333;
+            display: none;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="kiosko-container">
+        <h1>KIOSKO RETRO-ANDROIDE AR-1000</h1>
+        <div class="marca-sub">[ VENTANIYA 1001 // FLOTA INTERPLANETARIA ]</div>
+        <p>Cargá tu foto y elegí el formato de certificación para la base.</p>
+
+        <div class="upload-box">
+            <label for="subirFoto"><strong>Cargar Imagen:</strong></label><br><br>
+            <input type="file" id="subirFoto" accept="image/*">
+        </div>
+
+        <div class="botones-maquina">
+            <button class="btn-espacial" onclick="timbrar('espacial')">[ 🌌 SELLO ESPACIAL TOTAL ]</button>
+            <button class="btn-licencia" onclick="timbrar('licencia')">[ 🪪 LICENCIA PILOTO 1001 ]</button>
+            <button class="btn-bondi" onclick="timbrar('bondi')">[ 🚌 PICADORA BONDI 1970 ]</button>
+        </div>
+
+        <div>
+            <canvas id="lienzoKiosko"></canvas>
+        </div>
+
+        <div>
+            <button id="btnDescargar" class="btn-descarga" onclick="descargarImagen()">[ 💾 DESCARGAR DOCUMENTO CERTIFICADO ]</button>
+        </div>
+    </div>
+
+    <script>
+        const inputFoto = document.getElementById('subirFoto');
+        const canvas = document.getElementById('lienzoKiosko');
+        const ctx = canvas.getContext('2d');
+        const btnDescargar = document.getElementById('btnDescargar');
+        let imagenCargada = new Image();
+        let archivoTamanioBytes = 0;
+
+        inputFoto.addEventListener('change', function(e) {
+            const archivo = e.target.files[0];
+            if (archivo) {
+                archivoTamanioBytes = archivo.size;
+                const lector = new FileReader();
+                lector.onload = function(evento) {
+                    imagenCargada.src = evento.target.result;
+                    imagenCargada.onload = function() {
+                        canvas.width = imagenCargada.naturalWidth;
+                        canvas.height = imagenCargada.naturalHeight;
+                        ctx.drawImage(imagenCargada, 0, 0);
+                        canvas.style.display = 'block';
+                        btnDescargar.style.display = 'none';
+                    }
+                }
+                lector.readAsDataURL(archivo);
+            }
+        });
+
+        function generarHashGigante() {
+            const chars = "ABCDEF0123456789";
+            let hash = "0x";
+            for(let i=0; i<32; i++) {
+                hash += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return hash + "-ATOMIC";
+        }
+
+        function timbrar(tipo) {
+            if (!imagenCargada.src) {
+                alert("¡Atención Comandante! Primero cargue una imagen.");
+                return;
+            }
+
+            ctx.drawImage(imagenCargada, 0, 0);
+
+            const ahora = new Date();
+            const fechaStr = ahora.toISOString().split('T')[0];
+            const horaStr = ahora.toTimeString().split(' ')[0] + "." + String(ahora.getMilliseconds()).padStart(3, '0');
+            const hashInmutable = generarHashGigante();
+            const fontSize = Math.max(16, Math.floor(canvas.width * 0.022));
+            ctx.font = `bold ${fontSize}px 'Courier New', monospace`;
+
+            if (tipo === 'espacial') {
+                ctx.strokeStyle = '#00ffcc';
+                ctx.lineWidth = 8;
+                ctx.strokeRect(20, 20, canvas.width - 40, canvas.height - 40);
+
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.9)';
+                ctx.fillRect(30, 30, canvas.width - 60, 60);
+                ctx.fillStyle = '#00ffcc';
+                ctx.fillText(">> VENTANIYA 1001 // BASE ESPACIAL PUBLICA // TELEMETRIA ACTIVA", 50, 70);
+
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.9)';
+                ctx.fillRect(30, canvas.height - 150, canvas.width - 60, 120);
+
+                ctx.fillStyle = '#00ffcc';
+                ctx.fillText(`FECHA: ${fechaStr} [${horaStr}]`, 50, canvas.height - 115);
+                ctx.fillText(`GEO: LAT -34.9214° S // LON -57.9545° W // ALT: 420KM`, 50, canvas.height - 85);
+                ctx.fillText(`PAYLOAD: ${archivoTamanioBytes} BYTES // HASH: ${hashInmutable}`, 50, canvas.height - 55);
+
+            } else if (tipo === 'licencia') {
+                // Estilo Licencia de Piloto Interplanetario
+                ctx.strokeStyle = '#ff3366';
+                ctx.lineWidth = 8;
+                ctx.strokeRect(20, 20, canvas.width - 40, canvas.height - 40);
+
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.9)';
+                ctx.fillRect(30, 30, canvas.width - 60, 60);
+                ctx.fillStyle = '#ff3366';
+                ctx.fillText(">> LICENCIA DE PILOTO INTERPLANETARIO // CLASE A-1", 50, 70);
+
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.9)';
+                ctx.fillRect(30, canvas.height - 150, canvas.width - 60, 120);
+
+                ctx.fillStyle = '#ff3366';
+                ctx.fillText(`TITULAR: COMANDANTE GENERAL // N° REGISTRO: 1001-V`, 50, canvas.height - 115);
+                ctx.fillText(`AUTORIZACION: VUELO LIBRE EN ORBITA // EMISION: ${fechaStr}`, 50, canvas.height - 85);
+                ctx.fillText(`HASH CREDENCIAL: ${hashInmutable}`, 50, canvas.height - 55);
+
+            } else if (tipo === 'bondi') {
+                ctx.strokeStyle = '#ffb703';
+                ctx.lineWidth = 8;
+                ctx.strokeRect(20, 20, canvas.width - 40, canvas.height - 40);
+
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.9)';
+                ctx.fillRect(30, 30, canvas.width - 60, 60);
+                ctx.fillStyle = '#ffb703';
+                ctx.fillText(">> VENTANIYA 1001 // PICADORA MECANICA LINEA 70 // 1970", 50, 70);
+
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.9)';
+                ctx.fillRect(30, canvas.height - 150, canvas.width - 60, 120);
+
+                ctx.fillStyle = '#ffb703';
+                ctx.fillText(`BOLETO N°: 08492 // SECCION 1 // VALOR: $1.50`, 50, canvas.height - 115);
+                ctx.fillText(`FECHA: ${fechaStr} [${horaStr}] // TICKET OFICIAL`, 50, canvas.height - 85);
+                ctx.fillText(`SIZE: ${archivoTamanioBytes} BYTES // HASH: ${hashInmutable}`, 50, canvas.height - 55);
+            }
+
+            btnDescargar.style.display = 'block';
+        }
+
+        function descargarImagen() {
+            const enlace = document.createElement('a');
+            enlace.download = 'licencia-piloto-ventaniya1001.png';
+            enlace.href = canvas.toDataURL('image/png');
+            enlace.click();
+        }
+    </script>
+</body>
+</html>
